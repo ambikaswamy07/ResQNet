@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Basic Leaflet container patch to ensure map works with flex/grid layouts */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  background-color: #111827; /* Gray-900 to match theme before tiles load */
+}
