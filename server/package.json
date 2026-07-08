@@ -19,7 +19,8 @@
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.5.1",
     "nodemailer": "^6.9.16",
-    "@google/genai": "^2.10.0"
+    "@google/genai": "^2.10.0",
+    "express-validator": "^7.2.0"
   },
   "devDependencies": {
     "typescript": "^5.7.2",
