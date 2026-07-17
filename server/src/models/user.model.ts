@@ -9,27 +9,52 @@ export interface IRefreshToken {
 
 export interface IGeoJSONPoint {
   type: "Point";
-  coordinates: [number, number]; // [longitude, latitude]
+  coordinates: [number, number];
 }
 
 export interface IUser {
   name: string;
   email: string;
   password?: string;
+
   role: UserRole;
+
   isVerified: boolean;
+
   verificationToken?: string | null;
   verificationTokenExpires?: Date | null;
+
   passwordResetToken?: string | null;
   passwordResetExpires?: Date | null;
+
   refreshTokens: IRefreshToken[];
+
   avatar?: string;
+
   phone: string;
+
   location: IGeoJSONPoint;
+
+  // Volunteer
+  isAvailable: boolean;
+  skills: string[];
+  experience: number;
+  currentIncident?: Schema.Types.ObjectId | null;
+  rating: number;
+  completedIncidents: number;
+
+  // Hospital
+  hospitalName?: string;
+  hospitalAddress?: string;
+  totalBeds: number;
+  availableBeds: number;
+
+  // Common
   isActive: boolean;
   lastLogin?: Date | null;
   failedLoginAttempts: number;
   accountLockedUntil?: Date | null;
+
   createdAt: Date;
   updatedAt: Date;
 }
@@ -98,13 +123,11 @@ const UserSchema = new Schema<IUserDocument>(
       type: String,
       enum: USER_ROLES,
       default: "Citizen",
-      required: true,
     },
 
     isVerified: {
       type: Boolean,
       default: false,
-      required: true,
     },
 
     verificationToken: {
@@ -140,22 +163,76 @@ const UserSchema = new Schema<IUserDocument>(
     phone: {
       type: String,
       required: true,
-      trim: true,
     },
 
     location: {
       type: GeoJSONPointSchema,
-      required: true,
       default: () => ({
         type: "Point",
         coordinates: [0, 0],
       }),
     },
 
+    // Volunteer
+
+    isAvailable: {
+      type: Boolean,
+      default: true,
+    },
+
+    skills: {
+      type: [String],
+      default: [],
+    },
+
+    experience: {
+      type: Number,
+      default: 0,
+    },
+
+    currentIncident: {
+      type: Schema.Types.ObjectId,
+      ref: "Incident",
+      default: null,
+    },
+
+    rating: {
+      type: Number,
+      default: 5,
+    },
+
+    completedIncidents: {
+      type: Number,
+      default: 0,
+    },
+
+    // Hospital
+
+    hospitalName: {
+      type: String,
+      default: "",
+    },
+
+    hospitalAddress: {
+      type: String,
+      default: "",
+    },
+
+    totalBeds: {
+      type: Number,
+      default: 0,
+    },
+
+    availableBeds: {
+      type: Number,
+      default: 0,
+    },
+
+    // Common
+
     isActive: {
       type: Boolean,
       default: true,
-      required: true,
     },
 
     lastLogin: {
@@ -166,7 +243,6 @@ const UserSchema = new Schema<IUserDocument>(
     failedLoginAttempts: {
       type: Number,
       default: 0,
-      required: true,
     },
 
     accountLockedUntil: {
@@ -179,7 +255,6 @@ const UserSchema = new Schema<IUserDocument>(
   }
 );
 
-// Spatial index for location-based queries
 UserSchema.index({ location: "2dsphere" });
 
 export const User = model<IUserDocument>("User", UserSchema);

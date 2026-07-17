@@ -1,26 +1,137 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import http from "http";
+import { Server } from "socket.io";
+
+import authRoutes from "./routes/auth.routes";
+import incidentRoutes from "./routes/incident.routes";
+import volunteerRoutes from "./routes/volunteer.routes";
+import dispatcherRoutes from "./routes/dispatcher.routes";
+import hospitalRoutes from "./routes/hospital.route";
+
+import { initializeSocket } from "./sockets/socket";
 
 dotenv.config();
 
 const app = express();
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
+  },
+});
+
+initializeSocket(io);
+
 const PORT = process.env.PORT || 5000;
 
+// ======================================
+// Middleware
+// ======================================
+
 app.use(cors());
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-// Server status health check
-app.get('/status', (req, res) => {
-  res.json({
-    status: 'ok',
-    message: 'ResQNet API Server is running',
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
+// ======================================
+// Routes
+// ======================================
+
+app.use("/api/auth", authRoutes);
+
+app.use("/api/incidents", incidentRoutes);
+
+app.use("/api/volunteers", volunteerRoutes);
+
+app.use("/api/dispatcher", dispatcherRoutes);
+
+app.use("/api/hospitals", hospitalRoutes);
+
+// ======================================
+// Health Check
+// ======================================
+
+app.get("/status", (req, res) => {
+
+  res.status(200).json({
+
+    success: true,
+
+    message: "🚑 ResQNet API Running Successfully",
+
+    database:
+      mongoose.connection.readyState === 1
+        ? "Connected"
+        : "Disconnected",
+
+    socket: "Enabled",
+
     timestamp: new Date().toISOString(),
+
   });
+
 });
 
-app.listen(PORT, () => {
-  console.log(`[server] Server starting in ${process.env.NODE_ENV || 'development'} mode`);
-  console.log(`[server] Health status available at http://localhost:${PORT}/status`);
-});
+// ======================================
+// MongoDB
+// ======================================
+
+const connectDB = async () => {
+
+  try {
+
+    await mongoose.connect(
+      process.env.MONGODB_URI as string
+    );
+
+    console.log("✅ MongoDB Connected");
+
+  } catch (error) {
+
+    console.error(error);
+
+    process.exit(1);
+
+  }
+
+};
+
+// ======================================
+// Start Server
+// ======================================
+
+const startServer = async () => {
+
+  await connectDB();
+
+  server.listen(PORT, () => {
+
+    console.log("");
+
+    console.log("==========================================");
+
+    console.log("🚑 ResQNet Server Started");
+
+    console.log(`🌐 API     : http://localhost:${PORT}`);
+
+    console.log(`⚡ Socket  : ws://localhost:${PORT}`);
+
+    console.log("==========================================");
+
+  });
+
+};
+
+startServer();
