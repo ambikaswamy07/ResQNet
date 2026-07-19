@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
+import CitizenDashboard from "../pages/citizen/CitizenDashboard";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
@@ -54,7 +54,7 @@ export default function AppRoutes() {
                     path="/"
                     element={
                         <RoleProtectedRoute allowedRoles={["Citizen"]}>
-                            <MainLayout />
+                            <CitizenDashboard />
                         </RoleProtectedRoute>
                     }
                 />

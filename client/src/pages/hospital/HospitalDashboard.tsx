@@ -9,6 +9,8 @@ import {
     MapPin,
     HeartPulse,
 } from "lucide-react";
+import { motion } from "framer-motion";
+import CountUp from "react-countup";
 
 interface Hospital {
     _id: string;
@@ -103,37 +105,53 @@ export default function HospitalDashboard() {
 
         <div className="min-h-screen bg-slate-100 p-8">
 
-            <div className="flex justify-between items-center mb-8">
+            <div className="bg-gradient-to-r from-red-600 via-pink-600 to-purple-700 rounded-3xl shadow-2xl p-10 text-white mb-10">
 
-                <div>
+                <div className="flex flex-col lg:flex-row justify-between items-center">
 
-                    <h1 className="text-5xl font-bold text-slate-800">
+                    <div>
 
-                        🏥 Hospital Dashboard
+                        <h1 className="text-5xl font-extrabold">
+                            🏥 Hospital Command Center
+                        </h1>
 
-                    </h1>
+                        <p className="mt-4 text-lg text-pink-100 max-w-2xl">
+                            Manage hospital resources, monitor bed availability,
+                            coordinate emergency admissions, and support rescue operations
+                            efficiently.
+                        </p>
 
-                    <p className="text-slate-500 mt-2 text-lg">
+                        <button
+                            onClick={loadDashboard}
+                            className="mt-8 bg-white text-red-700 hover:bg-slate-100 px-6 py-3 rounded-xl font-semibold"
+                        >
+                            🔄 Refresh Dashboard
+                        </button>
 
-                        Manage hospitals and emergency beds
+                    </div>
 
-                    </p>
+                    <div className="mt-10 lg:mt-0">
+
+                        <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-8 text-center">
+
+                            <HeartPulse
+                                size={70}
+                                className="mx-auto mb-4"
+                            />
+
+                            <h2 className="text-2xl font-bold">
+                                Emergency Center
+                            </h2>
+
+                            <p className="text-xl mt-3">
+                                {stats.availableBeds} Beds Available
+                            </p>
+
+                        </div>
+
+                    </div>
 
                 </div>
-
-                <button
-
-                    onClick={loadDashboard}
-
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl flex items-center gap-2"
-
-                >
-
-                    <RefreshCw size={18} />
-
-                    Refresh
-
-                </button>
 
             </div>
 
@@ -254,6 +272,60 @@ export default function HospitalDashboard() {
                     </div>
 
                 </div>
+
+            </div>
+            {/* ================= QUICK ACTIONS ================= */}
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 mb-10">
+
+                <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    className="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl p-8 text-white shadow-xl cursor-pointer"
+                >
+                    <HeartPulse size={42} />
+
+                    <h2 className="text-2xl font-bold mt-5">
+                        Emergency Cases
+                    </h2>
+
+                    <p className="mt-3 opacity-90">
+                        Monitor incoming emergency patients.
+                    </p>
+
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    className="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl p-8 text-white shadow-xl cursor-pointer"
+                >
+                    <BedDouble size={42} />
+
+                    <h2 className="text-2xl font-bold mt-5">
+                        Bed Management
+                    </h2>
+
+                    <p className="mt-3 opacity-90">
+                        Track available beds across hospitals.
+                    </p>
+
+                </motion.div>
+
+                <motion.div
+                    whileHover={{ scale: 1.03 }}
+                    onClick={loadDashboard}
+                    className="bg-gradient-to-r from-green-600 to-emerald-500 rounded-2xl p-8 text-white shadow-xl cursor-pointer"
+                >
+                    <RefreshCw size={42} />
+
+                    <h2 className="text-2xl font-bold mt-5">
+                        Refresh Data
+                    </h2>
+
+                    <p className="mt-3 opacity-90">
+                        Reload hospital statistics instantly.
+                    </p>
+
+                </motion.div>
 
             </div>
 

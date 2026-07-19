@@ -9,7 +9,12 @@ import {
     Star,
     User,
     ShieldCheck,
+    Activity,
+    Ambulance,
 } from "lucide-react";
+
+import CountUp from "react-countup";
+import { motion } from "framer-motion";
 
 export default function VolunteerDashboard() {
 
@@ -126,147 +131,236 @@ export default function VolunteerDashboard() {
 
         <div className="min-h-screen bg-slate-100 p-8">
 
-            <div className="flex justify-between items-center mb-10">
+            <div className="bg-gradient-to-r from-emerald-600 via-cyan-600 to-blue-600 rounded-3xl shadow-2xl p-10 text-white mb-10">
 
-                <div>
+                <div className="flex flex-col lg:flex-row justify-between items-center">
 
-                    <h1 className="text-5xl font-bold text-slate-800">
-                        🚑 Volunteer Dashboard
-                    </h1>
+                    <div>
 
-                    <p className="text-slate-500 mt-2 text-lg">
-                        Manage your rescue operations
-                    </p>
+                        <h1 className="text-5xl font-extrabold">
+                            Welcome, {dashboard?.volunteer?.name}
+                        </h1>
+
+                        <p className="mt-4 text-lg text-cyan-100 max-w-2xl">
+                            Thank you for serving your community. Stay prepared for rescue
+                            missions, monitor assigned emergencies, and help save lives.
+                        </p>
+
+                        <div className="flex gap-4 mt-8">
+
+                            <button
+                                onClick={toggleAvailability}
+                                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${dashboard?.volunteer?.isAvailable
+                                    ? "bg-green-500 hover:bg-green-600"
+                                    : "bg-red-500 hover:bg-red-600"
+                                    }`}
+                            >
+                                {dashboard?.volunteer?.isAvailable
+                                    ? "🟢 Available"
+                                    : "🔴 Unavailable"}
+                            </button>
+
+                            <button
+                                onClick={loadDashboard}
+                                className="bg-white text-blue-700 hover:bg-slate-100 px-6 py-3 rounded-xl font-semibold"
+                            >
+                                🔄 Refresh Dashboard
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div className="mt-10 lg:mt-0">
+
+                        <div className="bg-white/20 backdrop-blur-lg rounded-2xl p-8 text-center">
+
+                            <ShieldCheck size={70} className="mx-auto mb-4" />
+
+                            <h2 className="text-2xl font-bold">
+                                Volunteer Status
+                            </h2>
+
+                            <p className="text-xl mt-3">
+
+                                {dashboard?.volunteer?.isAvailable
+                                    ? "Ready for Rescue"
+                                    : "Currently Offline"}
+
+                            </p>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-                <div className="flex gap-4">
+            </div>
 
-                    <button
-                        onClick={toggleAvailability}
-                        className={`px-5 py-3 rounded-xl text-white font-semibold ${dashboard?.volunteer?.isAvailable
-                            ? "bg-green-600 hover:bg-green-700"
-                            : "bg-red-600 hover:bg-red-700"
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mt-10">
+
+                {/* Assigned Incidents */}
+
+                <motion.div
+                    whileHover={{ y: -8 }}
+                    className="bg-white rounded-2xl shadow-xl p-6"
+                >
+
+                    <Ambulance
+                        className="text-red-500 mb-4"
+                        size={38}
+                    />
+
+                    <h2 className="text-4xl font-bold text-slate-800">
+                        <CountUp
+                            end={dashboard?.assignedIncidents?.length || 0}
+                            duration={2}
+                        />
+                    </h2>
+
+                    <p className="text-slate-500 mt-2">
+                        Assigned Incidents
+                    </p>
+
+                </motion.div>
+
+                {/* Rating */}
+
+                <motion.div
+                    whileHover={{ y: -8 }}
+                    className="bg-white rounded-2xl shadow-xl p-6"
+                >
+
+                    <Star
+                        className="text-yellow-500 mb-4"
+                        size={38}
+                    />
+
+                    <h2 className="text-4xl font-bold text-slate-800">
+                        {dashboard?.volunteer?.rating}
+                    </h2>
+
+                    <p className="text-slate-500 mt-2">
+                        Volunteer Rating
+                    </p>
+
+                </motion.div>
+
+                {/* Completed */}
+
+                <motion.div
+                    whileHover={{ y: -8 }}
+                    className="bg-white rounded-2xl shadow-xl p-6"
+                >
+
+                    <CheckCircle
+                        className="text-green-600 mb-4"
+                        size={38}
+                    />
+
+                    <h2 className="text-4xl font-bold text-slate-800">
+
+                        <CountUp
+                            end={dashboard?.volunteer?.completedIncidents || 0}
+                            duration={2}
+                        />
+
+                    </h2>
+
+                    <p className="text-slate-500 mt-2">
+                        Completed Missions
+                    </p>
+
+                </motion.div>
+
+                {/* Availability */}
+
+                <motion.div
+                    whileHover={{ y: -8 }}
+                    className="bg-white rounded-2xl shadow-xl p-6"
+                >
+
+                    <Activity
+                        className={`mb-4 ${dashboard?.volunteer?.isAvailable
+                            ? "text-green-600"
+                            : "text-red-500"
+                            }`}
+                        size={38}
+                    />
+
+                    <h2
+                        className={`text-3xl font-bold ${dashboard?.volunteer?.isAvailable
+                            ? "text-green-600"
+                            : "text-red-600"
                             }`}
                     >
                         {dashboard?.volunteer?.isAvailable
-                            ? "Available"
-                            : "Unavailable"}
-                    </button>
+                            ? "Online"
+                            : "Offline"}
+                    </h2>
 
-                    <button
-                        onClick={loadDashboard}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold"
+                    <p className="text-slate-500 mt-2">
+                        Current Status
+                    </p>
+
+                </motion.div>
+
+            </div>
+
+            <div className="bg-white rounded-2xl shadow-xl mt-16 p-8">
+                {/* ================= QUICK ACTIONS ================= */}
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+
+                    <motion.div
+                        whileHover={{ scale: 1.03 }}
+                        onClick={toggleAvailability}
+                        className="bg-gradient-to-r from-green-600 to-emerald-500 rounded-2xl p-8 text-white shadow-xl cursor-pointer"
                     >
-                        Refresh
-                    </button>
+                        <Activity size={42} />
+
+                        <h2 className="text-2xl font-bold mt-5">
+                            Availability
+                        </h2>
+
+                        <p className="mt-3 opacity-90">
+                            {dashboard?.volunteer?.isAvailable
+                                ? "You are available for rescue operations."
+                                : "Click here to become available."}
+                        </p>
+                    </motion.div>
+
+                    <motion.div
+                        whileHover={{ scale: 1.03 }}
+                        className="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl p-8 text-white shadow-xl cursor-pointer"
+                    >
+                        <MapPin size={42} />
+
+                        <h2 className="text-2xl font-bold mt-5">
+                            Live Tracking
+                        </h2>
+
+                        <p className="mt-3 opacity-90">
+                            Monitor assigned incidents in real time.
+                        </p>
+                    </motion.div>
+
+                    <motion.div
+                        whileHover={{ scale: 1.03 }}
+                        className="bg-gradient-to-r from-red-500 to-orange-500 rounded-2xl p-8 text-white shadow-xl cursor-pointer"
+                    >
+                        <ShieldCheck size={42} />
+
+                        <h2 className="text-2xl font-bold mt-5">
+                            Emergency Support
+                        </h2>
+
+                        <p className="mt-3 opacity-90">
+                            Contact dispatch and nearby hospitals instantly.
+                        </p>
+                    </motion.div>
 
                 </div>
-            </div>
-
-            <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-6">
-
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-
-                    <div className="flex justify-between">
-
-                        <div>
-
-                            <p className="text-slate-500">
-                                Volunteer
-                            </p>
-
-                            <h2 className="text-2xl font-bold mt-3">
-                                {dashboard?.volunteer?.name}
-                            </h2>
-
-                        </div>
-
-                        <User className="text-blue-600" size={40} />
-
-                    </div>
-
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-
-                    <div className="flex justify-between">
-
-                        <div>
-
-                            <p className="text-slate-500">
-                                Rating
-                            </p>
-
-                            <h2 className="text-3xl font-bold mt-3">
-                                ⭐ {dashboard?.volunteer?.rating}
-                            </h2>
-
-                        </div>
-
-                        <Star className="text-yellow-500" size={40} />
-
-                    </div>
-
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-
-                    <div className="flex justify-between">
-
-                        <div>
-
-                            <p className="text-slate-500">
-                                Completed
-                            </p>
-
-                            <h2 className="text-3xl font-bold mt-3">
-                                {dashboard?.volunteer?.completedIncidents}
-                            </h2>
-
-                        </div>
-
-                        <CheckCircle className="text-green-600" size={40} />
-
-                    </div>
-
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-
-                    <div className="flex justify-between">
-
-                        <div>
-
-                            <p className="text-slate-500">
-                                Availability
-                            </p>
-
-                            <h2
-                                className={`text-2xl font-bold mt-3 ${dashboard?.volunteer?.isAvailable
-                                    ? "text-green-600"
-                                    : "text-red-600"
-                                    }`}
-                            >
-
-                                {dashboard?.volunteer?.isAvailable
-                                    ? "Available"
-                                    : "Unavailable"}
-
-                            </h2>
-
-                        </div>
-
-                        <ShieldCheck className="text-blue-600" size={40} />
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-xl mt-10 p-8">
-
                 <h2 className="text-3xl font-bold mb-6">
                     Assigned Incidents
                 </h2>
