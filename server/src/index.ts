@@ -100,9 +100,11 @@ const connectDB = async () => {
 
   } catch (error) {
 
+    console.error("❌ MongoDB Connection Failed:");
+
     console.error(error);
 
-    process.exit(1);
+    throw error;
 
   }
 
@@ -113,25 +115,25 @@ const connectDB = async () => {
 // ======================================
 
 const startServer = async () => {
+  try {
+    console.log("Step 1: Connecting to MongoDB...");
 
-  await connectDB();
+    await connectDB();
 
-  server.listen(PORT, () => {
+    console.log("Step 2: Starting server...");
 
-    console.log("");
-
-    console.log("==========================================");
-
-    console.log("🚑 ResQNet Server Started");
-
-    console.log(`🌐 API     : http://localhost:${PORT}`);
-
-    console.log(`⚡ Socket  : ws://localhost:${PORT}`);
-
-    console.log("==========================================");
-
-  });
-
+    server.listen(PORT, () => {
+      console.log("");
+      console.log("==========================================");
+      console.log("🚑 ResQNet Server Started");
+      console.log(`🌐 API     : http://localhost:${PORT}`);
+      console.log(`⚡ Socket  : ws://localhost:${PORT}`);
+      console.log("==========================================");
+    });
+  } catch (err) {
+    console.error("❌ SERVER START ERROR:");
+    console.error(err);
+  }
 };
 
 startServer();
