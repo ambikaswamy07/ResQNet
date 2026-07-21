@@ -22,6 +22,7 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://resqnet-client-tz0n.onrender.com",
+  "https://res-q-net-ruby.vercel.app",
 ];
 
 const io = new Server(server, {
